@@ -90,7 +90,7 @@ def main():
                 load_shot(page, url, shot)
                 check_errors(errors)
                 target = ROOT / 'screenshots' / shot['name']
-                for quality in (85, 75, 65):
+                for quality in (95, 90, 85):
                     page.screenshot(path=str(target), type='jpeg', quality=quality)
                     if target.stat().st_size < 262144:
                         break

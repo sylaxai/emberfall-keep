@@ -8,6 +8,69 @@ different mechanics, different art. Only the kit's `vendor/makefun-game.ts`
 reused. No libraries, no network requests, no assets: plain ES modules +
 canvas 2D + WebAudio, all files under `game/`.
 
+## Where things live — architecture map
+
+Read the headings first: config → sim → systems → render.
+
+### 1. Config — game/src/config.js
+
+Every number and colour: field, path, towers, enemies, waves, economy,
+palette, Keeper story lines. No logic.
+
+### 2. Random — game/src/random.js
+
+mulberry32 seeded RNG. The seed is the whole replay: same seed, same game.
+
+### 3. Simulation — game/src/world.js
+
+The rules and state, no drawing, no browser: build / upgrade / sell /
+startWave / step, event flags, particles, floating texts, trauma shake.
+
+### 4. Input — game/src/input.js
+
+Mouse + keyboard, one-shot actions (start wave, pause, mute, speed,
+restart, deselect), tower hotkeys 1–5.
+
+### 5. Audio — game/src/audio.js
+
+WebAudio synth only, no assets: one sound per event flag, plus the
+wave-clear chime and the boss-death boom.
+
+### 6. Render — game/src/render.js
+
+Drawing only: field, road, keep, towers, enemies, HUD, build bar, wave
+banner and toast, boss bar, title / victory / defeat screens.
+
+### 7. Shots — game/src/shots.js
+
+The auto-player (public build / upgrade / startWave only) plus the
+staged-cover ticks: a pinned seed + step count reproduces one exact frame.
+
+### 8. Main loop — game/src/main.js
+
+Screens, fixed 1/60 timestep, speed 1x/2x, hit-stop with a real-time
+restore, tiered feedback (shake / flash / sound), wave toast, best score.
+
+### 9. Page — game/index.html
+
+Canvas `#game` + screen-reader `#status` line + module script.
+
+### 10. Entrypoint — main.ts
+
+Copies `game/` + `screenshots/` to the output dir and writes
+`dossier.json` with the vendored `buildDossier`.
+
+### 11. Dev server — serve.ts
+
+Tiny static server on port 8080 (`node serve.ts`).
+
+### 12. Tools — tools/
+
+`sim.js` (headless balance: auto-player must WIN), `shoot.py`
+(screenshots), `test_play.py` (mouse play-test), `scan-seeds.mjs`
+(staged-cover seed scan), `check-shot-truth.py` (HUD numbers recomputed
+from a headless replay), `measure-shots.py` (look gates).
+
 ## Concept
 
 EMBERFALL KEEP: a tower-defense strategy game. You are the keeper of a mountain
@@ -19,7 +82,8 @@ build and when you upgrade decides everything.
 
 Art direction: warm fantasy — deep moss-green field, warm amber/gold UI, ember
 glow on enemies. Palette: background #0e1a12, grass A #1d3324, grass B #24402c,
-path dirt #6b543a, path edge #8a6f4d, keep stone #9aa3ad, wood #7a5230, gold
+path dirt #57432e (darkened so ember enemies pop in value, not just hue),
+path edge #8a6f4d, keep stone #9aa3ad, wood #7a5230, gold
 #ffd94d, arrow #ffe9a8, cannon ember #ff7a3d, frost ice #7ad9ff, arcane violet
 #c77dff, tesla yellow #ffe14d, enemy ember #ff5a3d, text #f5ead6, muted
 #a8b39a. Everything reads at a glance when the screenshot is shrunk: big gold

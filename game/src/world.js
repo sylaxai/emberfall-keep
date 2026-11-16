@@ -1,3 +1,5 @@
+// EMBERFALL KEEP simulation: the rules and state, no drawing, no browser.
+// Architecture map lives at the top of main.js: config -> sim -> systems -> render.
 import {TOWERS,ENEMIES,WAVES,WAYPOINTS,PATH_CELLS,ECONOMY,RULES} from './config.js';
 export const EVENT_SHOOT=1,EVENT_CANNON=2,EVENT_FROST=4,EVENT_ZAP=8,EVENT_KILL=16,EVENT_COIN=32,EVENT_LEAK=64,EVENT_WAVE_CLEAR=128,EVENT_WIN=256,EVENT_LOSE=512,EVENT_BUILD=1024,EVENT_UPGRADE=2048;
 export function createWorld(random){
